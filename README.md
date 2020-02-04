@@ -46,6 +46,7 @@ module "aws_accesstier" {
 | package\_name | Override to use a specific version of netagent (e.g. `banyan-netagent-1.5.0`) | `string` | `"banyan-netagent"` | no |
 | ssh\_key\_name | Name of an SSH key stored in AWS to allow management access | `string` | `""` | no |
 | vpc\_id | ID of the VPC in which to create the Access Tier | `string` | n/a | yes |
+| custom\_user\_data | A list of strings representing commands to add to the Launch Configuration user data to execute during instance initialization. Each string (or each command) must end with `\n`. Example: `["touch some/file\n", "wget ...\n"]` | `list(string)` | `[]` | no |
 
 ## Outputs
 

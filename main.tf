@@ -95,7 +95,7 @@ resource aws_launch_configuration "conf" {
     virtual_name = "ephemeral0"
   }
 
-  user_data = join("", [
+  user_data = join("", concat([
     "#!/bin/bash -ex\n",
     "yum update -y\n",
     "yum install -y jq tar gzip curl sed\n",
@@ -113,7 +113,7 @@ resource aws_launch_configuration "conf" {
     "BANYAN_HOST_TAGS= ",
     "./install ${var.refresh_token} ${var.cluster_name} \n",
     "echo 'Port 2222' >> /etc/ssh/sshd_config && /bin/systemctl restart sshd.service\n",
-  ])
+  ], var.custom_user_data))
 }
 
 resource aws_alb "nlb" {
@@ -129,7 +129,7 @@ resource aws_alb "nlb" {
 }
 
 resource aws_lb_target_group "target443" {
-  name = "banyan-tg-443"
+  name     = "banyan-tg-443"
   vpc_id   = var.vpc_id
   port     = 443
   protocol = "TCP"
@@ -153,7 +153,7 @@ resource aws_lb_listener "listener443" {
 }
 
 resource aws_lb_target_group "target8443" {
-  name = "banyan-tg-8443"
+  name     = "banyan-tg-8443"
   vpc_id   = var.vpc_id
   port     = 8443
   protocol = "TCP"
