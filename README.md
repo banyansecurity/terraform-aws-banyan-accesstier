@@ -9,16 +9,16 @@ This module creates an AWS auto-scaling group (ASG) and a network load balancer 
 
 ```hcl
 module "aws_accesstier" {
-  source             = "./modules/banyan-accesstier-aws"
-  region             = "us-east-1"
-  vpc_id             = "vpc-0e73afd7c24062f0a"
-  public_subnets     = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
-  private_subnets    = ["subnet-00e393f22c3f09e16", "subnet-0dfce8195de704b65"]
-  cluster_name       = "my-banyan-shield"
-  site_name          = "my-banyan-site"
-  site_domain_names  = ["*.banyan.mycompany.com"]
-  ssh_key_name       = "my-ssh-key"
-  refresh_token      = "eyJhbGciOiJSUzI1NiIsIm..."
+  source                = "./modules/banyan-accesstier-aws"
+  region                = "us-east-1"
+  vpc_id                = "vpc-0e73afd7c24062f0a"
+  public_subnet_ids     = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
+  private_subnet_ids    = ["subnet-00e393f22c3f09e16", "subnet-0dfce8195de704b65"]
+  cluster_name          = "my-banyan-shield"
+  site_name             = "my-banyan-site"
+  site_domain_names     = ["*.banyan.mycompany.com"]
+  ssh_key_name          = "my-ssh-key"
+  refresh_token         = "eyJhbGciOiJSUzI1NiIsIm..."
 }
 ```
 
