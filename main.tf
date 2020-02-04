@@ -83,7 +83,7 @@ resource "aws_autoscaling_group" "asg" {
 }
 
 resource aws_launch_configuration "conf" {
-  name            = "banyan-accesstier-conf"
+  name_prefix     = "banyan-accesstier-conf-"
   image_id        = var.ami_id != "" ? var.ami_id : data.aws_ami.default_ami.id
   instance_type   = var.instance_type
   key_name        = var.ssh_key_name
@@ -93,6 +93,10 @@ resource aws_launch_configuration "conf" {
   ephemeral_block_device {
     device_name  = "/dev/sdc"
     virtual_name = "ephemeral0"
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
   user_data = join("", concat([
