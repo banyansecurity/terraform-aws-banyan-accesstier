@@ -53,6 +53,7 @@ module "aws_accesstier" {
 |------|-------------|
 | nlb\_dns\_name | DNS name of the load balancer (example: `banyan-nlb-b335ff082d3b27ff.elb.us-east-1.amazonaws.com`) |
 | nlb\_zone\_id | Zone ID of the load balancer (example: `Z26RNL4JYFTOTI`) |
+| security\_group\_id | The ID of the security group attached to the access tier instances, which can be added as an inbound rule on other backend groups (example: `sg-1234abcd`) |
 
 ## Authors
 
