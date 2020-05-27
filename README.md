@@ -1,7 +1,7 @@
 Banyan AWS Access Tier Module
 =============================
 
-Creates an autoscaling Access Tier for use with [Banyan Security].
+Creates an autoscaling Access Tier for use with [Banyan Security][banyan-security].
 
 This module creates an AWS auto-scaling group (ASG) and a network load balancer (NLB) for a Banyan Access Tier. Only the NLB is exposed to the public internet. The Access Tier and your applications live in private subnets with no ingress from the internet.
 
