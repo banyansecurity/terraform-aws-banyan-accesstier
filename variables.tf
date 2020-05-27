@@ -103,3 +103,9 @@ variable "custom_user_data" {
   description = "Custom commands to append to the launch configuration initialization script."
   default     = []
 }
+
+variable "redirect_http_to_https" {
+  type        = bool
+  description = "If true, requests to the AccessTier on port 80 will be redirected to port 443"
+  default     = false
+}

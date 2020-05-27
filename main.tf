@@ -109,6 +109,7 @@ resource aws_launch_configuration "conf" {
     "cd /opt/banyan-packages\n",
     "while [ -f /var/run/yum.pid ]; do sleep 1; done\n",
     "BANYAN_ACCESS_TIER=true ",
+    "BANYAN_REDIRECT_TO_HTTPS=${var.redirect_http_to_https} ",
     "BANYAN_SITE_NAME=${var.site_name} ",
     "BANYAN_SITE_ADDRESS=${aws_alb.nlb.dns_name} ",
     "BANYAN_SITE_DOMAIN_NAMES=", join(",", var.site_domain_names), " ",
