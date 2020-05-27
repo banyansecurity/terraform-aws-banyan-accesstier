@@ -9,7 +9,7 @@ This module creates an AWS auto-scaling group (ASG) and a network load balancer 
 
 ```hcl
 module "aws_accesstier" {
-  source                 = "./modules/banyan-accesstier-aws"
+  source                 = "tradel/banyan-accesstier/aws"
   region                 = "us-east-1"
   vpc_id                 = "vpc-0e73afd7c24062f0a"
   public_subnet_ids      = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
@@ -23,7 +23,31 @@ module "aws_accesstier" {
 }
 ```
 
-**NOTE:** The default value for `management_cidr` leaves SSH open to the world on port 2222. You should probably use the CIDR of your VPC, or a bastion host, instead.
+## Notes
+
+The default value for `management_cidr` leaves SSH open to the world on port 2222. You should probably use the CIDR of your VPC, or a bastion host, instead.
+
+It's probably also a good idea to leave the `refresh_token` out of your code and pass it as a variable instead, so you don't accidentally commit your Banyan API token to your version control system:
+
+```hcl
+variable "refresh_token" {
+  type = string
+}
+
+module "aws_accesstier" {
+  source                 = "tradel/banyan-accesstier/aws"
+  refresh_token          = var.refresh_token
+  ...
+}
+```
+
+```
+export TF_VAR_refresh_token="eyJhbGciOiJSUzI1NiIsIm..."
+terraform plan
+```
+
+
+
 
 ## Inputs
 
