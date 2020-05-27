@@ -9,16 +9,17 @@ This module creates an AWS auto-scaling group (ASG) and a network load balancer 
 
 ```hcl
 module "aws_accesstier" {
-  source                = "./modules/banyan-accesstier-aws"
-  region                = "us-east-1"
-  vpc_id                = "vpc-0e73afd7c24062f0a"
-  public_subnet_ids     = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
-  private_subnet_ids    = ["subnet-00e393f22c3f09e16", "subnet-0dfce8195de704b65"]
-  cluster_name          = "my-banyan-shield"
-  site_name             = "my-banyan-site"
-  site_domain_names     = ["*.banyan.mycompany.com"]
-  ssh_key_name          = "my-ssh-key"
-  refresh_token         = "eyJhbGciOiJSUzI1NiIsIm..."
+  source                 = "./modules/banyan-accesstier-aws"
+  region                 = "us-east-1"
+  vpc_id                 = "vpc-0e73afd7c24062f0a"
+  public_subnet_ids      = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
+  private_subnet_ids     = ["subnet-00e393f22c3f09e16", "subnet-0dfce8195de704b65"]
+  cluster_name           = "my-banyan-shield"
+  site_name              = "my-banyan-site"
+  site_domain_names      = ["*.banyan.mycompany.com"]
+  ssh_key_name           = "my-ssh-key"
+  refresh_token          = "eyJhbGciOiJSUzI1NiIsIm..."
+  redirect_http_to_https = true
 }
 ```
 
@@ -47,6 +48,7 @@ module "aws_accesstier" {
 | ssh\_key\_name | Name of an SSH key stored in AWS to allow management access | `string` | `""` | no |
 | vpc\_id | ID of the VPC in which to create the Access Tier | `string` | n/a | yes |
 | custom\_user\_data | A list of strings representing commands to add to the Launch Configuration user data to execute during instance initialization. Each string (or each command) must end with `\n`. Example: `["touch some/file\n", "wget ...\n"]` | `list(string)` | `[]` | no |
+| redirect\_http\_to\_https | If true, requests to the AccessTier on port 80 will be redirected to port 443 | `bool` | `false` | no |
 
 ## Outputs
 
