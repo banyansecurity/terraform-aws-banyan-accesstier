@@ -73,6 +73,12 @@ terraform plan
 | vpc\_id | ID of the VPC in which to create the Access Tier | `string` | n/a | yes |
 | custom\_user\_data | A list of strings representing commands to add to the Launch Configuration user data to execute during instance initialization. Each string (or each command) must end with `\n`. Example: `["touch some/file\n", "wget ...\n"]` | `list(string)` | `[]` | no |
 | redirect\_http\_to\_https | If true, requests to the AccessTier on port 80 will be redirected to port 443 | `bool` | `false` | no |
+| access\_event\_rate\_limiting\_enabled | Whether to enable rate limiting/flood protection on access events sent to Shield | `bool` | `true` | no |
+| rate\_limiting\_max\_credits | Maximum number of credits the rate limiter can accumulate | `number` | `1000` | no |
+| rate\_limiting\_credit\_interval | Interval between granting additional credits to the rate limiter | `string` | `"1m"` | no |
+| rate\_limiting\_credits\_per\_interval | Number of credits issued in each interval | `number` | `1` | no |
+| rate\_limiting\_by\_key | Whether to enable rate limiting by client IP | `bool` | `true` | no |
+| rate\_limiting\_key\_expiration | Time limit for retaining client IP/key | `string` | `"9m"` | no |
 
 ## Outputs
 
