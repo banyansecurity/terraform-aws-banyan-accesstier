@@ -109,3 +109,39 @@ variable "redirect_http_to_https" {
   description = "If true, requests to the AccessTier on port 80 will be redirected to port 443"
   default     = false
 }
+
+variable "access_event_rate_limiting_enabled" {
+  type        = bool
+  description = "Whether to enable rate limiting/flood protection on access events sent to Shield"
+  default     = true
+}
+
+variable "rate_limiting_max_credits" {
+  type        = number
+  description = "Maximum number of credits the rate limiter can accumulate"
+  default     = 1000
+}
+
+variable "rate_limiting_credit_interval" {
+  type        = string
+  description = "Interval between granting additional credits to the rate limiter"
+  default     = "1m"
+}
+
+variable "rate_limiting_credits_per_interval" {
+  type        = number
+  description = "Number of credits issued in each interval"
+  default     = 1
+}
+
+variable "rate_limiting_by_key" {
+  type        = bool
+  description = "Whether to enable rate limiting by client IP"
+  default     = true
+}
+
+variable "rate_limiting_key_expiration" {
+  type        = string
+  description = "Time limit for retaining client IP/key"
+  default     = "9m"
+}
