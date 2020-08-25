@@ -65,7 +65,7 @@ resource "aws_autoscaling_group" "asg" {
   min_size                  = var.min_instances
   desired_capacity          = var.min_instances
   vpc_zone_identifier       = var.private_subnet_ids
-  health_check_grace_period = 300
+  health_check_grace_period = 180
   health_check_type         = "ELB"
   target_group_arns         = [aws_lb_target_group.target443.arn, aws_lb_target_group.target8443.arn]
 
@@ -103,6 +103,10 @@ resource aws_launch_configuration "conf" {
     "#!/bin/bash -ex\n",
     "yum update -y\n",
     "yum install -y jq tar gzip curl sed awslogs\n",
+    "echo \"* soft nofile 100000\n* hard nofile 100000\n\" > /etc/security/limits.d/90-banyan.conf\n",
+    "echo \"options nf_conntrack hashsize=65536\n\" > /etc/modprobe.d/banyan.conf\n",
+    "echo \"fs.file-max = 262144\n\" > /etc/sysctl.d/90-banyan.conf\n",
+    "sysctl -w fs.file-max=262144\n",
     "systemctl enable awslogsd && systemctl start awslogsd\n",
     "rpm --import https://www.banyanops.com/onramp/repo/RPM-GPG-KEY-banyan\n",
     "yum-config-manager --add-repo https://www.banyanops.com/onramp/repo\n",

@@ -32,7 +32,7 @@ variable "private_subnet_ids" {
 
 variable "package_name" {
   type        = string
-  description = "Override to use a specific version of netagent (e.g. `banyan-netagent-1.5.0`)"
+  description = "Override to use a specific version of netagent (e.g. `banyan-netagent-1.25.0`)"
   default     = "banyan-netagent"
 }
 
