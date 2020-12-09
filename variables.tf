@@ -109,3 +109,9 @@ variable "redirect_http_to_https" {
   description = "If true, requests to the AccessTier on port 80 will be redirected to port 443"
   default     = false
 }
+
+variable "iam_instance_profile" {
+  type        = string
+  description = "The name attribute of the IAM instance profile to associate with launched instances."
+  default     = null
+}
