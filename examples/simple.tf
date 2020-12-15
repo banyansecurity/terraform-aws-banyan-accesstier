@@ -3,7 +3,7 @@ variable "refresh_token" {
 }
 
 module "aws_accesstier" {
-  source                 = "tradel/banyan-accesstier/aws"
+  source                 = "banyansecurity/banyan-accesstier/aws"
   region                 = "us-east-1"
   vpc_id                 = "vpc-0e73afd7c24062f0a"
   public_subnet_ids      = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
