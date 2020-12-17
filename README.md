@@ -73,6 +73,7 @@ terraform plan
 | vpc\_id | ID of the VPC in which to create the Access Tier | `string` | n/a | yes |
 | custom\_user\_data | A list of strings representing commands to add to the Launch Configuration user data to execute during instance initialization. Each string (or each command) must end with `\n`. Example: `["touch some/file\n", "wget ...\n"]` | `list(string)` | `[]` | no |
 | redirect\_http\_to\_https | If true, requests to the AccessTier on port 80 will be redirected to port 443 | `bool` | `false` | no |
+| iam\_instance\_profile | The name attribute of the IAM instance profile to associate with launched instances. | `string` | `null` | no |
 
 ## Outputs
 

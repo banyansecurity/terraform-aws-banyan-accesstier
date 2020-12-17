@@ -90,6 +90,8 @@ resource aws_launch_configuration "conf" {
   security_groups = [aws_security_group.sg.id]
   ebs_optimized   = true
 
+  iam_instance_profile = var.iam_instance_profile
+
   ephemeral_block_device {
     device_name  = "/dev/sdc"
     virtual_name = "ephemeral0"
