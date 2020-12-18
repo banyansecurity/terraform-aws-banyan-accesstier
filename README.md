@@ -8,6 +8,10 @@ This module creates an AWS auto-scaling group (ASG) and a network load balancer 
 ## Usage
 
 ```hcl
+provider "aws" {
+  region = "us-east-1"
+}
+
 module "aws_accesstier" {
   source                 = "banyansecurity/banyan-accesstier/aws"
   region                 = "us-east-1"
