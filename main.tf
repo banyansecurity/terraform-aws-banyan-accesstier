@@ -171,34 +171,6 @@ resource aws_lb_listener "listener443" {
   }
 }
 
-resource aws_lb_target_group "target80" {
-  count = var.redirect_http_to_https ? 1 : 0
-
-  name     = "banyan-tg-80"
-  vpc_id   = var.vpc_id
-  port     = 80
-  protocol = "TCP"
-  health_check {
-    port                = 9998
-    protocol            = "HTTP"
-    interval            = 30
-    healthy_threshold   = 2
-    unhealthy_threshold = 2
-  }
-}
-
-resource aws_lb_listener "listener80" {
-  count = var.redirect_http_to_https ? 1 : 0
-
-  load_balancer_arn = aws_alb.nlb.arn
-  port              = 80
-  protocol          = "TCP"
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.target80[0].arn
-  }
-}
-
 resource aws_lb_target_group "target8443" {
   name     = "banyan-tg-8443"
   vpc_id   = var.vpc_id
