@@ -34,7 +34,7 @@ resource aws_security_group "sg" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-  
+
   ingress {
     from_port   = 8443
     to_port     = 8443
@@ -63,9 +63,9 @@ resource aws_security_group "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
+  tags = merge(var.tags, {
     Provider = "BanyanOps"
-  }
+  })
 }
 
 resource "aws_autoscaling_group" "asg" {
@@ -79,16 +79,18 @@ resource "aws_autoscaling_group" "asg" {
   health_check_type         = "ELB"
   target_group_arns         = [aws_lb_target_group.target443.arn, aws_lb_target_group.target8443.arn]
 
-  tag {
-    key                 = "Name"
-    value               = "${var.site_name}-BanyanHost"
-    propagate_at_launch = true
-  }
+  dynamic "tag" {
+    # do another merge for application specific tags if need-be
+    for_each = merge(var.tags, {
+      Provider = "BanyanOps"
+      Name     = "${var.site_name}-BanyanHost"
+    })
 
-  tag {
-    key                 = "Provider"
-    value               = "BanyanOps"
-    propagate_at_launch = true
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
   }
 }
 
@@ -140,9 +142,9 @@ resource aws_alb "nlb" {
   subnets                          = var.public_subnet_ids
   enable_cross_zone_load_balancing = var.cross_zone_enabled
 
-  tags = {
+  tags = merge(var.tags, {
     Provider = "BanyanOps"
-  }
+  })
 }
 
 resource aws_lb_target_group "target443" {
