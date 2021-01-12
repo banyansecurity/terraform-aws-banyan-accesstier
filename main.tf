@@ -25,16 +25,6 @@ resource aws_security_group "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  dynamic "ingress" {
-    for_each = var.redirect_http_to_https ? [true] : []
-    content {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  }
-
   ingress {
     from_port   = 8443
     to_port     = 8443
