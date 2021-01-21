@@ -115,3 +115,9 @@ variable "iam_instance_profile" {
   description = "The name attribute of the IAM instance profile to associate with launched instances."
   default     = null
 }
+
+variable "tags" {
+  type        = map
+  description = "Add tags to each resource"
+  default     = null
+}
