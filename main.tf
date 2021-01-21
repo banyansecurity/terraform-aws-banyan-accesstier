@@ -25,6 +25,16 @@ resource aws_security_group "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  dynamic "ingress" {
+    for_each = var.redirect_http_to_https ? [true] : []
+    content {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+  
   ingress {
     from_port   = 8443
     to_port     = 8443
@@ -67,7 +77,7 @@ resource "aws_autoscaling_group" "asg" {
   vpc_zone_identifier       = var.private_subnet_ids
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  target_group_arns         = [aws_lb_target_group.target443.arn, aws_lb_target_group.target8443.arn]
+  target_group_arns         = compact([join("", aws_lb_target_group.target80.*.arn), aws_lb_target_group.target443.arn, aws_lb_target_group.target8443.arn])
 
   tag {
     key                 = "Name"
@@ -156,6 +166,34 @@ resource aws_lb_listener "listener443" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target443.arn
+  }
+}
+
+resource aws_lb_target_group "target80" {
+  count = var.redirect_http_to_https ? 1 : 0
+
+  name     = "banyan-tg-80"
+  vpc_id   = var.vpc_id
+  port     = 80
+  protocol = "TCP"
+  health_check {
+    port                = 9998
+    protocol            = "HTTP"
+    interval            = 30
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+resource aws_lb_listener "listener80" {
+  count = var.redirect_http_to_https ? 1 : 0
+
+  load_balancer_arn = aws_alb.nlb.arn
+  port              = 80
+  protocol          = "TCP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target80[0].arn
   }
 }
 
