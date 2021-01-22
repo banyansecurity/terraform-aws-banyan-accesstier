@@ -184,6 +184,10 @@ resource aws_lb_target_group "target80" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
+  
+  tags = merge(var.tags, {
+    Provider = "BanyanOps"
+  })
 }
 
 resource aws_lb_listener "listener80" {
