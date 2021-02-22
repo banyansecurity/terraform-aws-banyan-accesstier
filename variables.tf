@@ -121,3 +121,27 @@ variable "tags" {
   description = "Add tags to each resource"
   default     = null
 }
+
+variable "security_group_tags" {
+  type        = map
+  description = "Additional tags to the security_group"
+  default     = null
+}
+
+variable "autoscaling_group_tags" {
+  type        = map
+  description = "Additional tags to the autoscaling_group"
+  default     = null
+}
+
+variable "lb_tags" {
+  type        = map
+  description = "Additional tags to the lb"
+  default     = null
+}
+
+variable "target_group_tags" {
+  type        = map
+  description = "Additional tags to each target_group"
+  default     = null
+}
