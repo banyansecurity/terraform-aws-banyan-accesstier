@@ -1,3 +1,17 @@
+## v1.1.10
+ * Support additional AccessTier tags via `host_tags` variable.
+ * Support large tokens via `groups_by_userinfo` variable.
+ * Support custom naming prefix for all AWS resources via `name_prefix` variable.
+
+## v1.1.9
+ * Align release to correct tag
+
+## v1.1.8
+ * Add custom tags to port 80 listener for NLB
+
+## v1.1.7
+ * Better support for port 80 redirects
+
 ## v1.1.6
  * Added parameter for setting an IAM Instance Profile on ASG instances.
 
