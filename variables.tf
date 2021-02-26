@@ -145,3 +145,21 @@ variable "target_group_tags" {
   description = "Additional tags to each target_group"
   default     = null
 }
+
+variable "host_tags" {
+  type        = map 
+  description = "Additional tags to assign to this AccessTier"
+  default     = {"type": "access_tier"}
+}
+
+variable "groups_by_userinfo" {
+  type        = bool
+  description = "Derive groups information from userinfo endpoint"
+  default     = false
+}
+
+variable "name_prefix" {
+  type        = string
+  description = "String to be added in front of all AWS object names"
+  default     = "banyan"
+}
