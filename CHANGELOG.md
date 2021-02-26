@@ -1,7 +1,10 @@
+## v1.1.11
+ * Documented the `host_tags`, `groups_by_userinfo`, and `name_prefix` input variables.
+
 ## v1.1.10
- * Support additional AccessTier tags via `host_tags` variable.
- * Support large tokens via `groups_by_userinfo` variable.
- * Support custom naming prefix for all AWS resources via `name_prefix` variable.
+ * Support additional AccessTier tags via `host_tags` input variable.
+ * Support large tokens via `groups_by_userinfo` input variable.
+ * Support custom naming prefix for all AWS resources via `name_prefix` input variable.
 
 ## v1.1.9
  * Align release to correct tag

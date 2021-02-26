@@ -79,6 +79,9 @@ terraform plan
 | redirect\_http\_to\_https | If true, requests to the AccessTier on port 80 will be redirected to port 443 | `bool` | `false` | no |
 | iam\_instance\_profile | The name attribute of the IAM instance profile to associate with launched instances. | `string` | `null` | no |
 | tags | Additional tags to apply to resources created by this module | `map` | `null` | no |
+| host_tags | Additional Banyan tags to assign to this AccessTier | `map` | `{"type": "access_tier"}` | no |
+| groups_by_userinfo | Derive groups information from userinfo endpoint. _Only enable if instructed by Banyan Support._ | `bool` | `false` | no |
+| name_prefix | String to be added in front of all AWS object names | `string` | `"banyan"` | no |
 
 ## Outputs
 
