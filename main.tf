@@ -1,3 +1,13 @@
+locals {
+  tags = merge(var.tags, {
+    Provider = "BanyanOps"
+  })
+  
+  asg_tags = merge(local.tags, {
+    Name = "${var.site_name}-BanyanHost"
+  })
+}
+
 data aws_ami "default_ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -58,9 +68,7 @@ resource aws_security_group "sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.security_group_tags)
 }
 
 resource "aws_autoscaling_group" "asg" {
@@ -76,10 +84,7 @@ resource "aws_autoscaling_group" "asg" {
 
   dynamic "tag" {
     # do another merge for application specific tags if need-be
-    for_each = merge(var.tags, {
-      Provider = "BanyanOps"
-      Name     = "${var.site_name}-BanyanHost"
-    })
+    for_each = merge(local.asg_tags, var.autoscaling_group_tags)
 
     content {
       key                 = tag.key
@@ -138,9 +143,7 @@ resource aws_alb "nlb" {
   subnets                          = var.public_subnet_ids
   enable_cross_zone_load_balancing = var.cross_zone_enabled
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.lb_tags)
 }
 
 resource aws_lb_target_group "target443" {
@@ -156,9 +159,7 @@ resource aws_lb_target_group "target443" {
     unhealthy_threshold = 2
   }
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.target_group_tags)
 }
 
 resource aws_lb_listener "listener443" {
@@ -186,9 +187,7 @@ resource aws_lb_target_group "target80" {
     unhealthy_threshold = 2
   }
   
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.target_group_tags)
 }
 
 resource aws_lb_listener "listener80" {
@@ -216,9 +215,7 @@ resource aws_lb_target_group "target8443" {
     unhealthy_threshold = 2
   }
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.target_group_tags)
 }
 
 resource aws_lb_listener "listener8443" {
@@ -242,4 +239,3 @@ resource aws_autoscaling_policy "cpu_policy" {
     target_value = 80
   }
 }
-
