@@ -28,6 +28,7 @@ resource aws_security_group "sg" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Web traffic"
   }
 
   dynamic "ingress" {
@@ -37,6 +38,7 @@ resource aws_security_group "sg" {
       to_port     = 80
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
+      description = "Redirect to 443"
     }
   }
   
@@ -45,6 +47,7 @@ resource aws_security_group "sg" {
     to_port     = 8443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow for web traffic"
   }
 
   ingress {
@@ -52,6 +55,7 @@ resource aws_security_group "sg" {
     to_port     = 9998
     protocol    = "tcp"
     cidr_blocks = var.healthcheck_cidrs
+    description = "Healthcheck"
   }
 
   ingress {
@@ -59,6 +63,7 @@ resource aws_security_group "sg" {
     to_port     = 2222
     protocol    = "tcp"
     cidr_blocks = var.management_cidrs
+    description = "Management"
   }
 
   egress {
@@ -66,6 +71,7 @@ resource aws_security_group "sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow egress to everything"
   }
 
   tags = merge(local.tags, var.security_group_tags)
