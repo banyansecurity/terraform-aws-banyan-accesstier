@@ -122,7 +122,9 @@ resource aws_launch_configuration "conf" {
   user_data = join("", concat([
     "#!/bin/bash -ex\n",
     "yum update -y\n",
-    "yum install -y jq tar gzip curl sed\n",
+    "yum install -y jq tar gzip curl sed python3\n",
+    "pip3 install --upgrade pip\n",
+    "/usr/local/bin/pip3 install pybanyan\n", # previous line changes /bin/pip3 to /usr/local/bin which is not in the path
     "rpm --import https://www.banyanops.com/onramp/repo/RPM-GPG-KEY-banyan\n",
     "yum-config-manager --add-repo https://www.banyanops.com/onramp/repo\n",
     "yum install -y ${var.package_name} \n",
