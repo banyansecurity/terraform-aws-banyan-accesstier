@@ -183,7 +183,7 @@ variable "http_tokens_imds_v2" {
   default     = "required"
 }
 
-variable "http_hop_limit" {
+variable "http_hop_limit_imds_v2" {
   type        = number
   description = "value for http_put_response_hop_limit to enable imds v2 for ec2 instance"
   default     = 1
