@@ -1,3 +1,14 @@
+## v1.1.14
+ * Add variables to support IMDS v2
+
+## v1.1.13
+ * Add descriptions to each rule in the security group
+ * Add all resources to module output so you can reference them downstream
+ * Install pybanyan so it's available for troubleshooting and automation
+
+## v1.1.12
+ * Support individual tags per resource.
+
 ## v1.1.11
  * Documented the `host_tags`, `groups_by_userinfo`, and `name_prefix` input variables.
 
