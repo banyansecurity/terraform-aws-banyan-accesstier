@@ -116,13 +116,6 @@ resource aws_launch_configuration "conf" {
     virtual_name = "ephemeral0"
   }
 
-  metadata_options {
-    http_endpoint               = var.http_endpoint_imds_v2
-    http_tokens                 = var.http_tokens_imds_v2
-    http_put_response_hop_limit = var.http_hop_limit_imds_v2
-  }
-
-
   lifecycle {
     create_before_destroy = true
   }

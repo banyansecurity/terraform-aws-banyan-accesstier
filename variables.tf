@@ -169,22 +169,3 @@ variable "max_instance_lifetime" {
   default     = null
   description = "The maximum amount of time, in seconds, that an instance can be in service, values must be either equal to 0 or between 604800 and 31536000 seconds"
 }
-
-
-variable "http_endpoint_imds_v2" {
-  type        = string
-  description = "value for http_endpoint to enable imds v2 for ec2 instance"
-  default     = "enabled"
-}
-
-variable "http_tokens_imds_v2" {
-  type        = string
-  description = "value for http_tokens to enable imds v2 for ec2 instance"
-  default     = "required"
-}
-
-variable "http_hop_limit_imds_v2" {
-  type        = number
-  description = "value for http_put_response_hop_limit to enable imds v2 for ec2 instance"
-  default     = 1
-}
