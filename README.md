@@ -82,6 +82,9 @@ terraform plan
 | host_tags | Additional Banyan tags to assign to this AccessTier | `map` | `{"type": "access_tier"}` | no |
 | groups_by_userinfo | Derive groups information from userinfo endpoint. _Only enable if instructed by Banyan Support._ | `bool` | `false` | no |
 | name_prefix | String to be added in front of all AWS object names | `string` | `"banyan"` | no |
+| http_endpoint_imds_v2 | Value for http_endpoint to enable imds v2 for ec2 instance | `string` | `"enabled"` | no |
+| http_tokens_imds_v2 | Value for http_tokens to enable imds v2 for ec2 instance | `string` | `"required"` | no |
+| http_hop_limit_imds_v2 | Value for http_put_response_hop_limit to enable imds v2 for ec2 instance | `number` | `1` | no |
 
 ## Outputs
 
