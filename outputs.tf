@@ -23,11 +23,6 @@ output "asg" {
   description = "The `aws_autoscaling_group.asg` resource" 
 }
 
-output "conf" {
-  value       = aws_launch_configuration.conf
-  description = "The `aws_launch_configuration.conf` resource" 
-}
-
 output "nlb" {
   value       = aws_alb.nlb
   description = "The `aws_alb.nlb` resource" 
