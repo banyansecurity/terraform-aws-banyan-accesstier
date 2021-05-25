@@ -14,7 +14,6 @@ provider "aws" {
 
 module "aws_accesstier" {
   source                 = "banyansecurity/banyan-accesstier/aws"
-  region                 = "us-east-1"
   vpc_id                 = "vpc-0e73afd7c24062f0a"
   public_subnet_ids      = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
   private_subnet_ids     = ["subnet-00e393f22c3f09e16", "subnet-0dfce8195de704b65"]
@@ -57,7 +56,6 @@ terraform plan
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:-----:|
-| region | Region in which to create Access Tier | `string` | n/a | yes |
 | cluster\_name | Name of an existing Shield cluster to register this Access Tier with | `string` | n/a | yes |
 | site\_name | Name to use when registering this Access Tier with the console | `string` | n/a | yes |
 | private\_subnet\_ids | IDs of the subnets where the Access Tier should create instances | `list(string)` | n/a | yes |

@@ -1,8 +1,3 @@
-variable "region" {
-  type        = string
-  description = "Region in which to create Access Tier"
-}
-
 variable "vpc_id" {
   type        = string
   description = "ID of the VPC in which to create the Access Tier"
