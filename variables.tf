@@ -117,15 +117,15 @@ variable "iam_instance_profile" {
 }
 
 variable "tags" {
-  type        = map
+  type        = map(any)
   description = "Add tags to each resource"
   default     = null
 }
 
 variable "host_tags" {
-  type        = map 
+  type        = map(any)
   description = "Additional tags to assign to this AccessTier"
-  default     = {"type": "access_tier"}
+  default     = { "type" : "access_tier" }
 }
 
 variable "groups_by_userinfo" {
@@ -139,3 +139,24 @@ variable "name_prefix" {
   description = "String to be added in front of all AWS object names"
   default     = "banyan"
 }
+
+variable "rate_limiting" {
+  type = object({
+    enabled              = bool
+    max_credits          = number
+    interval             = string
+    credits_per_interval = number
+    enable_by_key        = bool
+    key_lifetime         = string
+  })
+  description = "Rate limiting configuration for access events"
+  default = {
+    enabled              = true
+    max_credits          = 5000
+    interval             = "1m"
+    credits_per_interval = 5
+    enable_by_key        = true
+    key_lifetime         = "9m"
+  }
+}
+

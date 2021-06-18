@@ -1,4 +1,4 @@
-data aws_ami "default_ami" {
+data "aws_ami" "default_ami" {
   most_recent = true
   owners      = ["amazon"]
 
@@ -8,7 +8,7 @@ data aws_ami "default_ami" {
   }
 }
 
-resource aws_security_group "sg" {
+resource "aws_security_group" "sg" {
   name        = "${var.name_prefix}-accesstier-sg"
   description = "Elastic Access Tier ingress traffic"
   vpc_id      = var.vpc_id
@@ -29,7 +29,7 @@ resource aws_security_group "sg" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
-  
+
   ingress {
     from_port   = 8443
     to_port     = 8443
@@ -89,7 +89,7 @@ resource "aws_autoscaling_group" "asg" {
   }
 }
 
-resource aws_launch_configuration "conf" {
+resource "aws_launch_configuration" "conf" {
   name_prefix     = "${var.name_prefix}-accesstier-conf-"
   image_id        = var.ami_id != "" ? var.ami_id : data.aws_ami.default_ami.id
   instance_type   = var.instance_type
@@ -110,13 +110,25 @@ resource aws_launch_configuration "conf" {
 
   user_data = join("", concat([
     "#!/bin/bash -ex\n",
+    # increase file handle limits
+    "echo '* soft nofile 100000' >> /etc/security/limits.d/banyan.conf\n",
+    "echo '* hard nofile 100000' >> /etc/security/limits.d/banyan.conf\n",
+    "echo 'fs.file-max = 100000' >> /etc/sysctl.d/90-banyan.conf\n",
+    "sysctl -w fs.file-max=100000\n",
+    # increase conntrack hashtable limits
+    "echo 'options nf_conntrack hashsize=65536' >> /etc/modprobe.d/banyan.conf\n",
+    "modprobe nf_conntrack\n",
+    "echo '65536' > /proc/sys/net/netfilter/nf_conntrack_buckets\n",
+    "echo '262144' > /proc/sys/net/netfilter/nf_conntrack_max\n",
+    # install prerequisites and Banyan netagent
     "yum update -y\n",
     "yum install -y jq tar gzip curl sed\n",
     "rpm --import https://www.banyanops.com/onramp/repo/RPM-GPG-KEY-banyan\n",
     "yum-config-manager --add-repo https://www.banyanops.com/onramp/repo\n",
-    "yum install -y ${var.package_name} \n",
-    "cd /opt/banyan-packages\n",
     "while [ -f /var/run/yum.pid ]; do sleep 1; done\n",
+    "yum install -y ${var.package_name} \n",
+    # configure and start netagent
+    "cd /opt/banyan-packages\n",
     "BANYAN_ACCESS_TIER=true ",
     "BANYAN_REDIRECT_TO_HTTPS=${var.redirect_http_to_https} ",
     "BANYAN_SITE_NAME=${var.site_name} ",
@@ -124,14 +136,20 @@ resource aws_launch_configuration "conf" {
     "BANYAN_SITE_DOMAIN_NAMES=", join(",", var.site_domain_names), " ",
     "BANYAN_SITE_AUTOSCALE=true ",
     "BANYAN_API=${var.api_server} ",
+    "BANYAN_HOST_TAGS=", join(",", [for k, v in var.host_tags : format("%s=%s", k, v)]), " ",
+    "BANYAN_ACCESS_EVENT_CREDITS_LIMITING=${var.rate_limiting.enabled} ",
+    "BANYAN_ACCESS_EVENT_CREDITS_MAX=${var.rate_limiting.max_credits} ",
+    "BANYAN_ACCESS_EVENT_CREDITS_INTERVAL=${var.rate_limiting.interval} ",
+    "BANYAN_ACCESS_EVENT_CREDITS_PER_INTERVAL=${var.rate_limiting.credits_per_interval} ",
+    "BANYAN_ACCESS_EVENT_KEY_LIMITING=${var.rate_limiting.enable_by_key} ",
+    "BANYAN_ACCESS_EVENT_KEY_EXPIRATION=${var.rate_limiting.key_lifetime} ",
     "BANYAN_GROUPS_BY_USERINFO=${var.groups_by_userinfo} ",
-    "BANYAN_HOST_TAGS=", join(",", [for k, v in var.host_tags: format("%s=%s", k, v)]), " ",
     "./install ${var.refresh_token} ${var.cluster_name} \n",
     "echo 'Port 2222' >> /etc/ssh/sshd_config && /bin/systemctl restart sshd.service\n",
   ], var.custom_user_data))
 }
 
-resource aws_alb "nlb" {
+resource "aws_alb" "nlb" {
   name                             = "${var.name_prefix}-nlb"
   load_balancer_type               = "network"
   internal                         = false
@@ -143,7 +161,7 @@ resource aws_alb "nlb" {
   })
 }
 
-resource aws_lb_target_group "target443" {
+resource "aws_lb_target_group" "target443" {
   name     = "${var.name_prefix}-tg-443"
   vpc_id   = var.vpc_id
   port     = 443
@@ -161,7 +179,7 @@ resource aws_lb_target_group "target443" {
   })
 }
 
-resource aws_lb_listener "listener443" {
+resource "aws_lb_listener" "listener443" {
   load_balancer_arn = aws_alb.nlb.arn
   port              = 443
   protocol          = "TCP"
@@ -171,7 +189,7 @@ resource aws_lb_listener "listener443" {
   }
 }
 
-resource aws_lb_target_group "target80" {
+resource "aws_lb_target_group" "target80" {
   count = var.redirect_http_to_https ? 1 : 0
 
   name     = "${var.name_prefix}-tg-80"
@@ -185,13 +203,13 @@ resource aws_lb_target_group "target80" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
   }
-  
+
   tags = merge(var.tags, {
     Provider = "BanyanOps"
   })
 }
 
-resource aws_lb_listener "listener80" {
+resource "aws_lb_listener" "listener80" {
   count = var.redirect_http_to_https ? 1 : 0
 
   load_balancer_arn = aws_alb.nlb.arn
@@ -203,7 +221,7 @@ resource aws_lb_listener "listener80" {
   }
 }
 
-resource aws_lb_target_group "target8443" {
+resource "aws_lb_target_group" "target8443" {
   name     = "${var.name_prefix}-tg-8443"
   vpc_id   = var.vpc_id
   port     = 8443
@@ -221,7 +239,7 @@ resource aws_lb_target_group "target8443" {
   })
 }
 
-resource aws_lb_listener "listener8443" {
+resource "aws_lb_listener" "listener8443" {
   load_balancer_arn = aws_alb.nlb.arn
   port              = 8443
   protocol          = "TCP"
@@ -231,7 +249,7 @@ resource aws_lb_listener "listener8443" {
   }
 }
 
-resource aws_autoscaling_policy "cpu_policy" {
+resource "aws_autoscaling_policy" "cpu_policy" {
   name                   = "${var.name_prefix}-cpu-scaling-policy"
   autoscaling_group_name = aws_autoscaling_group.asg.name
   policy_type            = "TargetTrackingScaling"

@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
 variable "refresh_token" {
   type = string
 }
@@ -14,5 +18,13 @@ module "aws_accesstier" {
   ssh_key_name           = "my-ssh-key"
   redirect_http_to_https = true
   refresh_token          = var.refresh_token
+  rate_limiting = {
+      enabled = true
+      max_credits = 1000
+      interval = "1m"
+      credits_per_interval = 10
+      enable_by_key = true
+      key_lifetime = "9m"
+  }
 }
 
