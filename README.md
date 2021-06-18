@@ -14,7 +14,6 @@ provider "aws" {
 
 module "aws_accesstier" {
   source                 = "banyansecurity/banyan-accesstier/aws"
-  region                 = "us-east-1"
   vpc_id                 = "vpc-0e73afd7c24062f0a"
   public_subnet_ids      = ["subnet-09ef9206ca406ffe7", "subnet-0bcb18d59e3ff3cc7"]
   private_subnet_ids     = ["subnet-00e393f22c3f09e16", "subnet-0dfce8195de704b65"]
@@ -83,6 +82,9 @@ terraform plan
 | <a name="input_ssh_key_name"></a> [ssh\_key\_name](#input\_ssh\_key\_name) | Name of an SSH key stored in AWS to allow management access | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Add tags to each resource | `map(any)` | `null` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC in which to create the Access Tier | `string` | n/a | yes |
+| <a name="input_http\_endpoint\_imds\_v2"></a> [http\_endpoint\_imds\_v2](#input\_http\_endpoint\_imds\_v2) | Value for http_endpoint to enable imds v2 for ec2 instance | `string` | `"enabled"` | no |
+| <a name="input_http\_tokens\_imds\_v2"></a> [http\_tokens\_imds\_v2](#input\_http\_tokens\_imds\_v2) | Value for http_tokens to enable imds v2 for ec2 instance | `string` | `"required"` | no |
+| <a name="input_http_hop_limit_imds_v2"></a> [http\_hop\_limit\_imds\_v2](#input\_http\_hop\_limit\_imds\_v2) | Value for http_put_response_hop_limit to enable imds v2 for ec2 instance | `number` | `1` | no |
 
 The `rate_limiting` object has the following structure:
 

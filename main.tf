@@ -1,4 +1,14 @@
-data "aws_ami" "default_ami" {
+locals {
+  tags = merge(var.tags, {
+    Provider = "BanyanOps"
+  })
+
+  asg_tags = merge(local.tags, {
+    Name = "${var.site_name}-BanyanHost"
+  })
+}
+
+data aws_ami "default_ami" {
   most_recent = true
   owners      = ["amazon"]
 
@@ -18,6 +28,7 @@ resource "aws_security_group" "sg" {
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Web traffic"
   }
 
   dynamic "ingress" {
@@ -27,6 +38,7 @@ resource "aws_security_group" "sg" {
       to_port     = 80
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
+      description = "Redirect to 443"
     }
   }
 
@@ -35,6 +47,7 @@ resource "aws_security_group" "sg" {
     to_port     = 8443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow for web traffic"
   }
 
   ingress {
@@ -42,6 +55,7 @@ resource "aws_security_group" "sg" {
     to_port     = 9998
     protocol    = "tcp"
     cidr_blocks = var.healthcheck_cidrs
+    description = "Healthcheck"
   }
 
   ingress {
@@ -49,6 +63,7 @@ resource "aws_security_group" "sg" {
     to_port     = 2222
     protocol    = "tcp"
     cidr_blocks = var.management_cidrs
+    description = "Management"
   }
 
   egress {
@@ -56,11 +71,10 @@ resource "aws_security_group" "sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow egress to everything"
   }
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.security_group_tags)
 }
 
 resource "aws_autoscaling_group" "asg" {
@@ -73,13 +87,11 @@ resource "aws_autoscaling_group" "asg" {
   health_check_grace_period = 300
   health_check_type         = "ELB"
   target_group_arns         = compact([join("", aws_lb_target_group.target80.*.arn), aws_lb_target_group.target443.arn, aws_lb_target_group.target8443.arn])
+  max_instance_lifetime     = var.max_instance_lifetime
 
   dynamic "tag" {
     # do another merge for application specific tags if need-be
-    for_each = merge(var.tags, {
-      Provider = "BanyanOps"
-      Name     = "${var.site_name}-BanyanHost"
-    })
+    for_each = merge(local.asg_tags, var.autoscaling_group_tags)
 
     content {
       key                 = tag.key
@@ -104,6 +116,13 @@ resource "aws_launch_configuration" "conf" {
     virtual_name = "ephemeral0"
   }
 
+  metadata_options {
+    http_endpoint               = var.http_endpoint_imds_v2
+    http_tokens                 = var.http_tokens_imds_v2
+    http_put_response_hop_limit = var.http_hop_limit_imds_v2
+  }
+
+
   lifecycle {
     create_before_destroy = true
   }
@@ -122,7 +141,9 @@ resource "aws_launch_configuration" "conf" {
     "echo '262144' > /proc/sys/net/netfilter/nf_conntrack_max\n",
     # install prerequisites and Banyan netagent
     "yum update -y\n",
-    "yum install -y jq tar gzip curl sed\n",
+    "yum install -y jq tar gzip curl sed python3\n",
+    "pip3 install --upgrade pip\n",
+    "/usr/local/bin/pip3 install pybanyan\n", # previous line changes /bin/pip3 to /usr/local/bin which is not in the path
     "rpm --import https://www.banyanops.com/onramp/repo/RPM-GPG-KEY-banyan\n",
     "yum-config-manager --add-repo https://www.banyanops.com/onramp/repo\n",
     "while [ -f /var/run/yum.pid ]; do sleep 1; done\n",
@@ -156,9 +177,7 @@ resource "aws_alb" "nlb" {
   subnets                          = var.public_subnet_ids
   enable_cross_zone_load_balancing = var.cross_zone_enabled
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.lb_tags)
 }
 
 resource "aws_lb_target_group" "target443" {
@@ -174,9 +193,7 @@ resource "aws_lb_target_group" "target443" {
     unhealthy_threshold = 2
   }
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.target_group_tags)
 }
 
 resource "aws_lb_listener" "listener443" {
@@ -204,9 +221,7 @@ resource "aws_lb_target_group" "target80" {
     unhealthy_threshold = 2
   }
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.target_group_tags)
 }
 
 resource "aws_lb_listener" "listener80" {
@@ -234,9 +249,7 @@ resource "aws_lb_target_group" "target8443" {
     unhealthy_threshold = 2
   }
 
-  tags = merge(var.tags, {
-    Provider = "BanyanOps"
-  })
+  tags = merge(local.tags, var.target_group_tags)
 }
 
 resource "aws_lb_listener" "listener8443" {
@@ -260,4 +273,3 @@ resource "aws_autoscaling_policy" "cpu_policy" {
     target_value = 80
   }
 }
-
