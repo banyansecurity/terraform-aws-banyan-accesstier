@@ -82,9 +82,11 @@ terraform plan
 | <a name="input_ssh_key_name"></a> [ssh\_key\_name](#input\_ssh\_key\_name) | Name of an SSH key stored in AWS to allow management access | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Add tags to each resource | `map(any)` | `null` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC in which to create the Access Tier | `string` | n/a | yes |
-| <a name="input_http\_endpoint\_imds\_v2"></a> [http\_endpoint\_imds\_v2](#input\_http\_endpoint\_imds\_v2) | Value for http_endpoint to enable imds v2 for ec2 instance | `string` | `"enabled"` | no |
-| <a name="input_http\_tokens\_imds\_v2"></a> [http\_tokens\_imds\_v2](#input\_http\_tokens\_imds\_v2) | Value for http_tokens to enable imds v2 for ec2 instance | `string` | `"required"` | no |
+| <a name="input_http_endpoint_imds_v2"></a> [http\_endpoint\_imds\_v2](#input\_http\_endpoint\_imds\_v2) | Value for http_endpoint to enable imds v2 for ec2 instance | `string` | `"enabled"` | no |
+| <a name="input_http_tokens_imds_v2"></a> [http\_tokens\_imds\_v2](#input\_http\_tokens\_imds\_v2) | Value for http_tokens to enable imds v2 for ec2 instance | `string` | `"required"` | no |
 | <a name="input_http_hop_limit_imds_v2"></a> [http\_hop\_limit\_imds\_v2](#input\_http\_hop\_limit\_imds\_v2) | Value for http_put_response_hop_limit to enable imds v2 for ec2 instance | `number` | `1` | no |
+| <a name="input_datadog_api_key"></a> [datadog\_api\_key](#input\_datadog\_api\_key) | DataDog API key to enable sending connection metrics into DataDog | `string` | `null` | no |
+
 
 The `rate_limiting` object has the following structure:
 
