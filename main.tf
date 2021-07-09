@@ -139,6 +139,8 @@ resource "aws_launch_configuration" "conf" {
     "modprobe nf_conntrack\n",
     "echo '65536' > /proc/sys/net/netfilter/nf_conntrack_buckets\n",
     "echo '262144' > /proc/sys/net/netfilter/nf_conntrack_max\n",
+    # install dogstatsd (if requested)
+    var.datadog_api_key != null ? "curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh | DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${var.datadog_api_key} DD_SITE=datadoghq.com bash -v\n" : "",
     # install prerequisites and Banyan netagent
     "yum update -y\n",
     "yum install -y jq tar gzip curl sed python3\n",
@@ -165,6 +167,7 @@ resource "aws_launch_configuration" "conf" {
     "BANYAN_ACCESS_EVENT_KEY_LIMITING=${var.rate_limiting.enable_by_key} ",
     "BANYAN_ACCESS_EVENT_KEY_EXPIRATION=${var.rate_limiting.key_lifetime} ",
     "BANYAN_GROUPS_BY_USERINFO=${var.groups_by_userinfo} ",
+    var.datadog_api_key != null ? "BANYAN_STATSD=true BANYAN_STATSD_ADDRESS=127.0.0.1:8125 " : "",
     "./install ${var.refresh_token} ${var.cluster_name} \n",
     "echo 'Port 2222' >> /etc/ssh/sshd_config && /bin/systemctl restart sshd.service\n",
   ], var.custom_user_data))

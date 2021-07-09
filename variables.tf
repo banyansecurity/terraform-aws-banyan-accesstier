@@ -202,3 +202,9 @@ variable "http_hop_limit_imds_v2" {
   description = "value for http_put_response_hop_limit to enable imds v2 for ec2 instance"
   default     = 1
 }
+
+variable "datadog_api_key" {
+    type = string
+    description = "API key for DataDog"
+    default = null
+}

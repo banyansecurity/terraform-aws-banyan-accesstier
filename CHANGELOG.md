@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.3.0
+
+* Add support for sending metrics to DataDog via `dogstatsd`
+
 ## v1.2.0
 
 * Tune kernel according to Banyan best practices
