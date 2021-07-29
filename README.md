@@ -26,6 +26,28 @@ module "aws_accesstier" {
 }
 ```
 
+## DataDog metrics integration
+
+We now support sending real-time connection metrics to DataDog. Each instance of the Access Tier will send the following metrics:
+
+| Name | Description |
+| :--- | :---------- |
+| `banyan.connections` | Total number of incoming connections |
+| `banyan.receive_rate` | Received bytes per second |
+| `banyan.transmit_rate` | Transmitted bytes per second |
+| `banyan.decision_time` | Time required to make authorization decisions, in seconds |
+| `banyan.response_time` | Total time required to send response to the user, in seconds |
+| `banyan.unauthorized_attemps` | Number of connections rejected due to missing client certificates or policy decisions |
+
+The metrics are tagged with `hostname`, `port`, `service`, and `site_name` so you can filter metrics for a particular Access Tier, host, or service.
+
+Support for other protocols (e.g. statsd, prometheus) and monitoring systems will be added in the future.
+
+To enable DataDog integration, paste your [DataDog API Key][] into the paramter `BanyanDDAPIKey` and re-run the stack. We will automatically install the DataDog agent on your Access Tier, connect it to DataDog, and begin sending metrics to it.
+
+[DataDog API Key]: https://docs.datadoghq.com/account_management/api-app-keys/#add-an-api-key-or-client-token
+
+
 ## Notes
 
 The default value for `management_cidr` leaves SSH open to the world on port 2222. You should probably use the CIDR of your VPC, or a bastion host, instead.
