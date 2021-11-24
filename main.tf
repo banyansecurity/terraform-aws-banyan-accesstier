@@ -188,6 +188,10 @@ resource "aws_lb_target_group" "target443" {
   vpc_id   = var.vpc_id
   port     = 443
   protocol = "TCP"
+  stickiness {
+      enabled = var.sticky_sessions
+      type = "source_ip"
+  }
   health_check {
     port                = 9998
     protocol            = "HTTP"
@@ -216,6 +220,10 @@ resource "aws_lb_target_group" "target80" {
   vpc_id   = var.vpc_id
   port     = 80
   protocol = "TCP"
+  stickiness {
+      enabled = var.sticky_sessions
+      type = "source_ip"
+  }
   health_check {
     port                = 9998
     protocol            = "HTTP"
@@ -244,6 +252,10 @@ resource "aws_lb_target_group" "target8443" {
   vpc_id   = var.vpc_id
   port     = 8443
   protocol = "TCP"
+  stickiness {
+      enabled = var.sticky_sessions
+      type = "source_ip"
+  }
   health_check {
     port                = 9998
     protocol            = "HTTP"

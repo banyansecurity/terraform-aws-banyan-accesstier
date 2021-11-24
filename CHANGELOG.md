@@ -1,5 +1,9 @@
 # Change Log
 
+## v1.4.0
+
+* Add flag for `sticky_sessions` for apps that need it
+
 ## v1.3.0
 
 * Add support for sending metrics to DataDog via `dogstatsd`

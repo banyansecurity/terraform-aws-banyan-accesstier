@@ -208,3 +208,9 @@ variable "datadog_api_key" {
     description = "API key for DataDog"
     default = null
 }
+
+variable "sticky_sessions" {
+    type = bool
+    description = "Enable session stickiness for apps that require it"
+    default = false
+}
