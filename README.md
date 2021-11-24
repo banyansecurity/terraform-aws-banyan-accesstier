@@ -108,6 +108,7 @@ terraform plan
 | <a name="input_http_tokens_imds_v2"></a> [http\_tokens\_imds\_v2](#input\_http\_tokens\_imds\_v2) | Value for http_tokens to enable imds v2 for ec2 instance | `string` | `"required"` | no |
 | <a name="input_http_hop_limit_imds_v2"></a> [http\_hop\_limit\_imds\_v2](#input\_http\_hop\_limit\_imds\_v2) | Value for http_put_response_hop_limit to enable imds v2 for ec2 instance | `number` | `1` | no |
 | <a name="input_datadog_api_key"></a> [datadog\_api\_key](#input\_datadog\_api\_key) | DataDog API key to enable sending connection metrics into DataDog | `string` | `null` | no |
+| <a name="input_sticky_sessions"></a> [datadog\_sticky\_sessions](#input\_sticky\_sessions) | Whether to force all connections from a source IP through the same Access Tier instance | `bool` | `false` | no |
 
 
 The `rate_limiting` object has the following structure:
