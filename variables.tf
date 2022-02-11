@@ -15,6 +15,36 @@ variable "management_cidrs" {
   default     = ["0.0.0.0/0"]
 }
 
+variable "shield_cidrs" {
+  type        = list(string)
+  description = "CIDR blocks to allow Shield (Cluster Coordinator) connections to"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "shield_port" {
+  type        = number
+  description = "TCP port number to allow Shield (Cluster Coordinator) connections to"
+  default     = 0
+}
+
+variable "command_center_cidrs" {
+  type        = list(string)
+  description = "CIDR blocks to allow Command Center connections to"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "trustprovider_cidrs" {
+  type        = list(string)
+  description = "CIDR blocks to allow TrustProvider connections to"
+  default     = ["0.0.0.0/0"]
+}
+
+variable "managed_internal_cidrs" {
+  type        = list(string)
+  description = "CIDR blocks to allow managed internal services connections to"
+  default     = ["0.0.0.0/0"]
+}
+
 variable "public_subnet_ids" {
   type        = list(string)
   description = "IDs of the subnets where the load balancer should create endpoints"
