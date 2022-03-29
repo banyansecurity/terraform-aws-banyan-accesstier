@@ -67,11 +67,35 @@ resource "aws_security_group" "sg" {
   }
 
   egress {
+    from_port   = var.shield_port  # shield_port defaults to 0
+    to_port     = var.shield_port != 0 ? var.shield_port : 65535
+    protocol    = "tcp"
+    cidr_blocks = var.shield_cidrs
+    description = "Shield (Cluster Coordinator)"
+  }
+
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = var.command_center_cidrs
+    description = "Command Center"
+  }
+
+  egress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = var.trustprovider_cidrs
+    description = "TrustProvider"
+  }
+
+  egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow egress to everything"
+    cidr_blocks = var.managed_internal_cidrs
+    description = "Managed internal services"
   }
 
   tags = merge(local.tags, var.security_group_tags)

@@ -81,6 +81,7 @@ terraform plan
 | <a name="input_ami_id"></a> [ami\_id](#input\_ami\_id) | ID of a custom AMI to use when creating Access Tier instances (leave blank to use default) | `string` | `""` | no |
 | <a name="input_api_server"></a> [api\_server](#input\_api\_server) | URL to the Banyan API server | `string` | `"https://net.banyanops.com/api/v1"` | no |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | Name of an existing Shield cluster to register this Access Tier with | `string` | n/a | yes |
+| <a name="input_command_center_cidrs"></a> [command\_center\_cidrs](#input\_command\_center\_cidrs) | CIDR blocks to allow Command Center connections to | `list(string)` | `[ "0.0.0.0/0" ]` | no |
 | <a name="input_cross_zone_enabled"></a> [cross\_zone\_enabled](#input\_cross\_zone\_enabled) | Allow load balancer to distribute traffic to other zones | `bool` | `true` | no |
 | <a name="input_custom_user_data"></a> [custom\_user\_data](#input\_custom\_user\_data) | Custom commands to append to the launch configuration initialization script. | `list(string)` | `[]` | no |
 | <a name="input_default_ami_name"></a> [default\_ami\_name](#input\_default\_ami\_name) | If no AMI ID is supplied, use the most recent AMI from this project | `string` | `"amzn2-ami-hvm-2.0.*-x86_64-ebs"` | no |
@@ -89,6 +90,7 @@ terraform plan
 | <a name="input_host_tags"></a> [host\_tags](#input\_host\_tags) | Additional tags to assign to this AccessTier | `map(any)` | `{ "type": "access_tier" }` | no |
 | <a name="input_iam_instance_profile"></a> [iam\_instance\_profile](#input\_iam\_instance\_profile) | The name attribute of the IAM instance profile to associate with launched instances. | `string` | `null` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | EC2 instance type to use when creating Access Tier instances | `string` | `"t3.large"` | no |
+| <a name="input_managed_internal_cidrs"></a> [managed\_internal\_cidrs](#input\_managed\_internal\_cidrs) | CIDR blocks to allow managed internal services connections to | `list(string)` | `[ "0.0.0.0/0" ]` | no |
 | <a name="input_management_cidrs"></a> [management\_cidrs](#input\_management\_cidrs) | CIDR blocks to allow SSH connections from | `list(string)` | `[ "0.0.0.0/0" ]` | no |
 | <a name="input_min_instances"></a> [min\_instances](#input\_min\_instances) | Minimum number of Access Tier instances to keep alive | `number` | `2` | no |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | String to be added in front of all AWS object names | `string` | `"banyan"` | no |
@@ -99,10 +101,13 @@ terraform plan
 | <a name="input_redirect_http_to_https"></a> [redirect\_http\_to\_https](#input\_redirect\_http\_to\_https) | If true, requests to the AccessTier on port 80 will be redirected to port 443 | `bool` | `false` | no |
 | <a name="input_refresh_token"></a> [refresh\_token](#input\_refresh\_token) | API token generated from the Banyan console | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | Region in which to create Access Tier | `string` | n/a | yes |
+| <a name="input_shield_cidrs"></a> [shield\_cidrs](#input\_shield\_cidrs) | CIDR blocks to allow Shield (Cluster Coordinator) connections to | `list(string)` | `[ "0.0.0.0/0" ]` | no |
+| <a name="input_shield_port"></a> [shield\_port](#input\_shield\_port) | TCP port number to allow Shield (Cluster Coordinator) connections to | `number` | `0` | no |
 | <a name="input_site_domain_names"></a> [site\_domain\_names](#input\_site\_domain\_names) | List of aliases or CNAMEs that will direct traffic to this Access Tier | `list(string)` | n/a | yes |
 | <a name="input_site_name"></a> [site\_name](#input\_site\_name) | Name to use when registering this Access Tier with the console | `string` | n/a | yes |
 | <a name="input_ssh_key_name"></a> [ssh\_key\_name](#input\_ssh\_key\_name) | Name of an SSH key stored in AWS to allow management access | `string` | `""` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Add tags to each resource | `map(any)` | `null` | no |
+| <a name="input_trustprovider_cidrs"></a> [trustprovider\_cidrs](#input\_trustprovider\_cidrs) | CIDR blocks to allow TrustProvider connections to | `list(string)` | `[ "0.0.0.0/0" ]` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC in which to create the Access Tier | `string` | n/a | yes |
 | <a name="input_http_endpoint_imds_v2"></a> [http\_endpoint\_imds\_v2](#input\_http\_endpoint\_imds\_v2) | Value for http_endpoint to enable imds v2 for ec2 instance | `string` | `"enabled"` | no |
 | <a name="input_http_tokens_imds_v2"></a> [http\_tokens\_imds\_v2](#input\_http\_tokens\_imds\_v2) | Value for http_tokens to enable imds v2 for ec2 instance | `string` | `"required"` | no |
