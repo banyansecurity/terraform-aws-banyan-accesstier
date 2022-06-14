@@ -8,13 +8,18 @@ locals {
   })
 }
 
-data aws_ami "default_ami" {
+data "aws_ami" "ubuntu" {
   most_recent = true
-  owners      = ["amazon"]
+  owners = ["099720109477"] # Canonical
 
   filter {
     name   = "name"
-    values = [var.default_ami_name]
+    values = ["ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*"]
+  }
+  
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
   }
 }
 
@@ -22,14 +27,6 @@ resource "aws_security_group" "sg" {
   name        = "${var.name_prefix}-accesstier-sg"
   description = "Elastic Access Tier ingress traffic"
   vpc_id      = var.vpc_id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Web traffic"
-  }
 
   dynamic "ingress" {
     for_each = var.redirect_http_to_https ? [true] : []
@@ -43,11 +40,27 @@ resource "aws_security_group" "sg" {
   }
 
   ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Web traffic"
+  }
+
+  ingress {
     from_port   = 8443
     to_port     = 8443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
     description = "Allow for web traffic"
+  }
+
+  ingress {
+    from_port   = 51820
+    to_port     = 51820
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow for service tunnel traffic"
   }
 
   ingress {
@@ -127,7 +140,7 @@ resource "aws_autoscaling_group" "asg" {
 
 resource "aws_launch_configuration" "conf" {
   name_prefix     = "${var.name_prefix}-accesstier-conf-"
-  image_id        = var.ami_id != "" ? var.ami_id : data.aws_ami.default_ami.id
+  image_id        = data.aws_ami.ubuntu.id
   instance_type   = var.instance_type
   key_name        = var.ssh_key_name
   security_groups = [aws_security_group.sg.id]
@@ -166,14 +179,9 @@ resource "aws_launch_configuration" "conf" {
     # install dogstatsd (if requested)
     var.datadog_api_key != null ? "curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh | DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${var.datadog_api_key} DD_SITE=datadoghq.com bash -v\n" : "",
     # install prerequisites and Banyan netagent
-    "yum update -y\n",
-    "yum install -y jq tar gzip curl sed python3\n",
-    "pip3 install --upgrade pip\n",
-    "/usr/local/bin/pip3 install pybanyan\n", # previous line changes /bin/pip3 to /usr/local/bin which is not in the path
-    "rpm --import https://www.banyanops.com/onramp/repo/RPM-GPG-KEY-banyan\n",
-    "yum-config-manager --add-repo https://www.banyanops.com/onramp/repo\n",
-    "while [ -f /var/run/yum.pid ]; do sleep 1; done\n",
-    "yum install -y ${var.package_name} \n",
+    "curl https://www.banyanops.com/onramp/deb-repo/banyan.key | apt-key add -\n",
+    "apt-add-repository \"deb https://www.banyanops.com/onramp/deb-repo xenial main\"\n",
+    "apt install -y ${var.package_name} \n",
     # configure and start netagent
     "cd /opt/banyan-packages\n",
     "BANYAN_ACCESS_TIER=true ",
