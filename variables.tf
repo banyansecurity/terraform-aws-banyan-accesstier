@@ -99,18 +99,6 @@ variable "ssh_key_name" {
   default     = ""
 }
 
-variable "ami_id" {
-  type        = string
-  description = "ID of a custom AMI to use when creating Access Tier instances (leave blank to use default)"
-  default     = ""
-}
-
-variable "default_ami_name" {
-  type        = string
-  description = "If no AMI ID is supplied, use the most recent AMI from this project"
-  default     = "amzn2-ami-hvm-2.0.*-x86_64-ebs"
-}
-
 variable "cross_zone_enabled" {
   type        = bool
   description = "Allow load balancer to distribute traffic to other zones"
@@ -132,7 +120,7 @@ variable "custom_user_data" {
 variable "redirect_http_to_https" {
   type        = bool
   description = "If true, requests to the AccessTier on port 80 will be redirected to port 443"
-  default     = false
+  default     = true
 }
 
 variable "iam_instance_profile" {
