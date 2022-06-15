@@ -24,7 +24,7 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_security_group" "sg" {
-  name        = "${var.name_prefix}-accesstier-sg"
+  name        = "${var.name_prefix}-accesstier-sg-1"
   description = "Elastic Access Tier ingress traffic"
   vpc_id      = var.vpc_id
 
@@ -91,16 +91,8 @@ resource "aws_security_group" "sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = var.command_center_cidrs
-    description = "Command Center"
-  }
-
-  egress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = var.trustprovider_cidrs
-    description = "TrustProvider"
+    cidr_blocks = concat(var.command_center_cidrs, var.trustprovider_cidrs)
+    description = "Command Center and TrustProvider"
   }
 
   egress {
@@ -306,6 +298,36 @@ resource "aws_lb_listener" "listener8443" {
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target8443.arn
+  }
+}
+
+resource "aws_lb_target_group" "target51820" {
+  name     = "${var.name_prefix}-tg-51820"
+  vpc_id   = var.vpc_id
+  port     = 51820
+  protocol = "UDP"
+  stickiness {
+      enabled = var.sticky_sessions
+      type = "source_ip"
+  }
+  health_check {
+    port                = 9998
+    protocol            = "HTTP"
+    interval            = 30
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+
+  tags = merge(local.tags, var.target_group_tags)
+}
+
+resource "aws_lb_listener" "listener51820" {
+  load_balancer_arn = aws_alb.nlb.arn
+  port              = 51820
+  protocol          = "UDP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.target51820.arn
   }
 }
 

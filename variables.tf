@@ -85,6 +85,7 @@ variable "refresh_token" {
 variable "site_domain_names" {
   type        = list(string)
   description = "List of aliases or CNAMEs that will direct traffic to this Access Tier"
+  default     = []
 }
 
 variable "api_server" {
